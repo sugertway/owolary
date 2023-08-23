@@ -1,100 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction Page</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    <style>
-        body {
-            background-image: url("bg.jpg");
-            background-size: cover;
-            font-family: Arial, sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
-        .section {
-            margin: 20px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-        }
-        h2 {
-            font-size: 24px;
-        }
-        p {
-            font-size: 16px;
-        }
-        .centered-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .payment-button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-        .payment-button:hover {
-            background-color: #2980b9;
-        }
-        a {
-            color: white;
-            text-decoration: underline;
-        }
-        a:hover {
-            color: white;
-        }
-    </style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/mdui@1.0.2/dist/css/mdui.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #F0F2F5;
+      color: #333;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .header {
+      background-color: #2E3A59;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+      display: flex;
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: -250px;
+      background-color: #2E3A59;
+      padding-top: 60px;
+      transition: left 0.3s ease-in-out;
+      z-index: 2;
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar-icon {
+      font-size: 24px;
+      color: #fff;
+      margin-right: 10px;
+    }
+
+    .sidebar-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .sidebar a:hover {
+      text-decoration: underline;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+      transition: margin-left 0.3s ease-in-out;
+      margin-left: 0;
+    }
+
+    .main-content.active {
+      margin-left: 250px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+    }
+
+    .section h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: #2E3A59;
+    }
+
+    .section p {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      color: #666;
+    }
+
+    .section a {
+      color: #FF80AB;
+      text-decoration: none;
+    }
+
+    .section a:hover {
+      text-decoration: underline;
+    }
+
+    .button-link {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #FF80AB;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .button-link:hover {
+      background-color: #FF4081;
+    }
+
+    .highlight-link {
+      color: #FF80AB;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .highlight-link:hover {
+      color: #FF4081;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #2E3A59;
+      color: #fff;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .toggle-mode,
+    .sidebar-toggle {
+      position: fixed;
+      bottom: 20px;
+      background-color: #757575;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .sidebar-toggle {
+      right: 80px;
+    }
+
+    .sidebar.active .section {
+      width: calc(100% - 250px);
+      margin-left: 250px;
+    }
+
+    .sidebar .section {
+      width: 100%;
+      margin-left: 0;
+      margin-top: 20px;
+    }
+
+    .dark-mode .header,
+    .dark-mode .footer {
+      background-color: #212121;
+    }
+
+    .dark-mode .sidebar {
+      background-color: #303030;
+    }
+
+    .dark-mode .section {
+      background-color: #CDD1DD;
+      color: #fff;
+      box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+    }
+
+    .dark-mode .section a,
+    .dark-mode .highlight-link,
+    .dark-mode .button-link {
+      color: #FF80AB;
+    }
+
+    .dark-mode .toggle-mode,
+    .dark-mode .sidebar-toggle {
+      background-color: #757575;
+      color: #fff;
+    }
+
+    .custom-button {
+      position: fixed;
+      bottom: 20px;
+      z-index: 2;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .custom-button.menu-button {
+      background-color: #FF80AB;
+      color: #fff;
+      right: 20px;
+    }
+
+    .custom-button.dark-mode-button {
+      background-color: #FF80AB;
+      color: #fff;
+      right: 80px;
+    }
+
+    .custom-button:hover {
+      background-color: #FF4081;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1 class="mdui-typo-title">介绍 / Introduction</h1>
+  </div>
+
+  <div class="container">
+    <div class="sidebar" id="sidebar">
+      <img src="avatar.png" alt="Avatar" class="sidebar-avatar">
+      <a href="#" class="mdui-list-item mdui-ripple">
+        <span class="sidebar-icon mdui-icon material-icons">home</span>收单页面 / Payment Page
+      </a>
+      <a href="#" class="mdui-list-item mdui-ripple">
+        <span class="sidebar-icon mdui-icon material-icons">shopping_cart</span>迷你挂件 / Mini Pendants
+      </a>
+      <a href="#" class="mdui-list-item mdui-ripple">
+        <span class="sidebar-icon mdui-icon material-icons">create</span>关于挂件 / About Pendent
+      </a>
+      <a href="#" class="mdui-list-item mdui-ripple">
+        <span class="sidebar-icon mdui-icon material-icons">announcement</span>重要声明 / Important Notice
+      </a>
+    </div>
+
+    <div class="main-content" id="main-content">
+      <div class="section">
+        <h2>收单页面 / Payment Page</h2>
+        <p>您可以在这里购买我的商品。<br>You can purchase my products here.</p>
+      </div>
+      <div class="section">
+        <h2>迷你挂件 / Mini Pendants</h2>
+
+<html>
+<head>
+<style>
+  .image-container {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .image-container img {
+    width: 100%;
+    height: auto;
+  }
+</style>
 </head>
 <body>
-    <div class="section">
-        <h2>收单页面 / Purchase Page</h2>
-        <p>您可以在这里购买我的商品。<br><br>
-        You can buy my products here.</p>
-    </div>
 
-    <div class="section">
-        <h2>迷你挂件 / Mini Pendants</h2>
-        <p>名叫Nelo的动漫女孩，一套3个，该挂件图案为「@wotakana_s」所绘制并已获授权。<br>
-        Mini pendants featuring a character named Nelo, a set of 3. The design is authorized and created by "@wotakana_s".<br><br>
-        您可以在<a href="https://skeb.jp/@wotakana_s/works/4">这里</a>看到我请求的图片。<br>
-        You can view the requested images from me <a href="https://skeb.jp/@wotakana_s/works/4">here</a>.<br><br>
-        一旦您购买此商品，我们将会在一周之内发货并向您发送追踪单号。<br>
-        Upon purchasing this product, we will ship it within a week and provide you with a tracking number.<br><br>
-        我们与工厂合作生产该挂件，工厂在中国合规运营并可在<a href="https://aiqicha.baidu.com/m/detail?pid=42466031569389">这里</a>查询到企业资质。<br>
-        We collaborate with a factory in China to produce these pendants. The factory operates in compliance and you can check their credentials <a href="https://aiqicha.baidu.com/m/detail?pid=42466031569389">here</a>.<br><br>
-        配送范围：澳大利亚或中国大陆（不含港澳台）<br>
-        Shipping Area: Australia or Mainland China (excluding Hong Kong, Macau, and Taiwan)<br><br>
-        配送方式：中国邮政挂号信。<br>
-        Shipping Method: China Post Registered Mail.</p>
-        
-        <div class="centered-button">           
-            <a class="payment-button" href="https://buy.stripe.com/7sIdUyewYcyn0Cs5kl">由<img src="stripe.png" alt="Stripe图标" height="24">支持付款</a>
-        </div>
-    </div>
+<div class="image-container">
+  <img src="moe.jpg" alt="Preview">
+</div>
 
-    <div class="section">
+</body>
+</html>
+
+        <p>一套3个，该挂件图案为「@wotakana_s」所绘制并已获授权。<br>
+Mini pendants featuring a character named Nelo, a set of 3. The design is authorized and created by "@wotakana_s".<br><br>
+          您可以在<a href="https://skeb.jp/@wotakana_s/works/4" class="highlight-link">这里</a>看到我请求的图片。<br>
+You can view the requested images from me <a href="https://skeb.jp/@wotakana_s/works/4">here</a>.<br><br>
+          一旦您购买此商品，我们将会在一周之内发货并向您发送追踪单号。<br>
+Upon purchasing this product, we will ship it within a week and provide you with a tracking number.<br><br>
+          我们与工厂合作生产该挂件，工厂在中国合规运营并可在<a href="https://aiqicha.baidu.com/m/detail?pid=42466031569389" class="highlight-link">这里</a>查询到企业资质。<br>
+We collaborate with a factory in China to produce these pendants. The factory operates in compliance and you can check their credentials <a href="https://aiqicha.baidu.com/m/detail?pid=42466031569389">here</a>.<br><br>
+          配送范围：澳大利亚或中国大陆（不含港澳台）<br>
+Shipping Area: Australia or Mainland China (excluding Hong Kong, Macau, and Taiwan)<br><br>
+          配送方式：中国邮政挂号信。<br>
+Shipping Method: China Post Registered Mail.</p>
+      </div>
+      <div class="section">
+        <h2>关于挂件 / About Pendent</h2>
+        <p>挂件售价 5 AUD。<br>
+          Pendant Price 5 AUD.<br><br>
+          今后我会继续更新商店内售卖的商品，希望您对此感兴趣。<br>
+In the future, I will continue to update the products sold in the store, and I hope you are interested in this.</p>
+        <a href="https://buy.stripe.com/7sIdUyewYcyn0Cs5kl" class="button-link"><font color="#FFFFFF">Pay with <img src="stripe.png" alt="Stripe" height="18"> </font></a>
+      </div>
+      <div class="section">
         <h2>重要声明 / Important Notice</h2>
-        如果您对产品和退换有相关疑问，请向 <a href="mailto:owolary@outlook.com">owolary@outlook.com</a> 发送邮件，或者在X上搜索「@lolirest」联系我。我在看到后会第一时间回答并解决。<br>
-        If you have any questions about the products or refunds, please email <a href="mailto:owolary@outlook.com">owolary@outlook.com</a> or find me on X as "@lolirest". I will respond promptly and resolve any issues.<br><br>
-        如果在交易流程未结束前发生任何令双方不快的事，我方有权单方面关闭订单，发放退款并将您拉入黑名单。<br>
-        If any unpleasant incidents occur before the completion of the transaction, we reserve the right to unilaterally cancel the order, issue a refund, and add you to the blacklist.</p>
+        <p>请在购买前根据自身能力选择合适的金额。<br>
+Please choose the appropriate amount based on your own abilities before purchasing.<br><br>
+          如果您对产品和退换有相关疑问，请向<a href="mailto:owolary@outlook.com" class="highlight-link">owolary@outlook.com</a>发送邮件，或者在X上搜索「@lolirest」联系我。我在看到后会第一时间回答并解决。<br>
+If you have any questions about the products or refunds, please email <a href="mailto:owolary@outlook.com">owolary@outlook.com</a> or find me on X as "@lolirest". I will respond promptly and resolve any issues.<br><br>
+          如果在交易流程未结束前发生任何令双方不快的事，我方有权单方面关闭订单，发放退款并将您拉入黑名单。<br>
+If any unpleasant incidents occur before the completion of the transaction, we reserve the right to unilaterally cancel the order, issue a refund, and add you to the blacklist.</p>
+      </div>
     </div>
+  </div>
 
     <div class="section">
         <p style="text-align: center;">2023 © lolirest<br>版权所有 / All rights reserved</p>
     </div>
+
+  <button id="sidebar-toggle" class="custom-button menu-button">
+    <span class="mdui-icon material-icons">menu</span>
+  </button>
+
+  <button id="dark-mode-toggle" class="custom-button dark-mode-button">
+    <span class="mdui-icon material-icons">brightness_4</span>
+  </button>
+
+  <script>
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.querySelector('.sidebar');
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const mainContent = document.getElementById('main-content');
+    const body = document.body;
+
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+      mainContent.classList.toggle('active');
+    });
+
+    darkModeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-mode');
+    });
+  </script>
 </body>
+
 </html>
